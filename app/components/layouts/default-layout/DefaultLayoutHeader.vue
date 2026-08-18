@@ -42,14 +42,24 @@
             aria-hidden="true"
           />
           <span
+            v-if="favoriteProductsCount > 0"
             class="absolute -right-0.5 -top-0.5 grid size-5 place-items-center rounded-full bg-violet-600 text-[10px] font-bold leading-none text-white shadow-lg shadow-violet-600/25"
-            >3</span
+            >{{ favoriteProductsCount }}</span
           >
         </button>
       </div>
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+import { useFavoriteProductsStore } from "~/stores/favorite-products";
+
+const favoriteProductsStore = useFavoriteProductsStore();
+const favoriteProductsCount = computed(
+  () => favoriteProductsStore.products.length,
+);
+</script>
 
 <style scoped>
 .logo {

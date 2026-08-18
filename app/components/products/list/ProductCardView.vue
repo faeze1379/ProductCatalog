@@ -11,13 +11,17 @@
       />
       <button
         type="button"
-        class="absolute right-2.5 top-2.5 grid size-8 place-items-center rounded-full bg-white shadow-[0_6px_16px_rgba(15,23,42,0.12)]"
-        aria-label="Add to favorites"
+        :class="[
+          'absolute right-2.5 top-2.5 grid size-8 place-items-center rounded-full shadow-[0_6px_16px_rgba(15,23,42,0.12)]',
+          isFavorite ? 'bg-violet-600' : 'bg-white',
+        ]"
+        @click="favoriteProductsStore.toggle(product)"
       >
         <img
           src="/icons/heart.svg"
           alt=""
           class="size-4"
+          :class="{ invert: isFavorite }"
           width="20"
           height="20"
           aria-hidden="true"
@@ -58,15 +62,21 @@
 
 <script setup lang="ts">
 import type { IProduct } from "~/services/product/product-service";
+import { useFavoriteProductsStore } from "~/stores/favorite-products";
 import { formatPrice } from "~/utils/price-formatter";
 
 interface IProps {
   product: IProduct;
 }
 
-withDefaults(defineProps<IProps>(), {
+const props = withDefaults(defineProps<IProps>(), {
   product: {} as IProduct,
 });
+
+const favoriteProductsStore = useFavoriteProductsStore();
+const isFavorite = computed(() =>
+  favoriteProductsStore.isFavorite(props.product.id),
+);
 
 function formatRating(rating: number) {
   return rating.toFixed(1);

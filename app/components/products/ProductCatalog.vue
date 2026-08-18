@@ -1,13 +1,16 @@
 <template>
-  <section class="mx-auto w-full max-w-7xl px-5 py-10 sm:px-8 lg:px-10">
-    <div class="space-y-3">
+  <section class="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-10">
+    <div class="space-y-2">
       <h1 class="text-4xl font-bold tracking-normal text-slate-950">
         Products
       </h1>
       <div class="text-base text-slate-600">Discover our latest products</div>
     </div>
     <ProductFilter v-model="searchQuery" />
-    <div class="mt-8">
+    <div v-if="!isLoading" class="mt-4">
+      <ProductCategoryList :categories="categories" class="mt-6" />
+    </div>
+    <div class="mt-4">
       <Loading v-if="isLoading" />
       <NotFound
         v-else-if="products.length === 0"
@@ -20,10 +23,14 @@
 </template>
 
 <script setup lang="ts">
+import ProductCategoryList from "~/components/products/category/ProductCategoryList.vue";
 import ProductFilter from "~/components/products/filter/ProductFilter.vue";
 import ProductList from "~/components/products/list/ProductList.vue";
 import Loading from "~/components/common/Loading.vue";
 import NotFound from "~/components/common/NotFound.vue";
+import CategoryService, {
+  type ICategory,
+} from "~/services/category/category-service";
 import ProductService, {
   type IProductsQueryParams,
   type IProductsResponse,
@@ -31,6 +38,7 @@ import ProductService, {
 
 const searchQuery = ref<string>("");
 const debouncedSearchQuery = ref<string>("");
+const categoryService = new CategoryService();
 const productService = new ProductService();
 
 let searchTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -59,7 +67,16 @@ const { data, pending, status } = await useAsyncData<IProductsResponse>(
   },
 );
 
+const { data: productCategories } = await useAsyncData<ICategory[]>(
+  "product-categories",
+  () => categoryService.get(),
+  {
+    server: false,
+  },
+);
+
 const products = computed(() => data.value?.products ?? []);
+const categories = computed(() => productCategories.value ?? []);
 const isLoading = computed(() => pending.value || status.value === "idle");
 
 watch(searchQuery, (value) => {

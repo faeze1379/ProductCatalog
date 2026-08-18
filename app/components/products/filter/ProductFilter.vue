@@ -34,7 +34,7 @@ interface IProps {
   modelValue?: string;
 }
 
-import BaseInput from "~/components/ui/BaseInput.vue";
+import BaseInput from "~/components/common/BaseInput.vue";
 withDefaults(defineProps<IProps>(), {
   modelValue: "",
 });

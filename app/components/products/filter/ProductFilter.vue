@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-7 flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-    <div class="w-full sm:max-w-md">
+  <div class="mt-7 flex w-full items-center gap-3">
+    <div class="min-w-0 flex-1">
       <BaseInput
         :model-value="modelValue"
         type="search"
@@ -25,7 +25,7 @@
       type="button"
       aria-label="Sort by price"
       :class="[
-        'flex h-12 w-full items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold shadow-[0_8px_22px_rgba(15,23,42,0.08)] sm:w-auto',
+        'flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-semibold shadow-[0_8px_22px_rgba(15,23,42,0.08)] sm:h-12 sm:gap-2 sm:px-4 sm:text-sm',
         props.sortOrder
           ? 'bg-violet-600 text-white'
           : 'border border-slate-200 bg-white text-slate-700',
@@ -36,7 +36,7 @@
       <img
         :src="sortIconSrc"
         alt=""
-        class="size-4"
+        class="size-3.5 sm:size-4"
         :class="{ invert: props.sortOrder }"
         width="20"
         height="20"

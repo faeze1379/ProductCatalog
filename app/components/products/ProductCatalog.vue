@@ -69,7 +69,7 @@ watch(searchQuery, (value) => {
 
   searchTimeout = setTimeout(() => {
     debouncedSearchQuery.value = value.trim();
-  }, 300);
+  }, 500);
 });
 
 onBeforeUnmount(() => {

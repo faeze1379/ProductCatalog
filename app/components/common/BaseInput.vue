@@ -5,7 +5,7 @@
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
-      class="h-14 w-full rounded-lg border border-slate-200 bg-white px-5 text-base text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
+      class="h-14 w-full rounded-lg bg-white px-5 text-base text-slate-950 shadow-[0_8px_22px_rgba(15,23,42,0.08)] outline-none transition placeholder:text-slate-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/10"
       :class="[
         $slots.prefix ? 'pl-13' : 'pl-5',
         $slots.suffix ? 'pr-13' : 'pr-5',

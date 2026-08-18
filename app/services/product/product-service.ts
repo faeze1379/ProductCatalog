@@ -16,11 +16,15 @@ export interface IProductsResponse {
   limit: number;
 }
 
+export type IProductSortOrder = "asc" | "desc";
+
 export interface IProductsQueryParams {
   limit?: number;
   skip?: number;
   select?: string;
   q?: string;
+  sortBy?: "price";
+  order?: IProductSortOrder;
 }
 
 export default class ProductService {

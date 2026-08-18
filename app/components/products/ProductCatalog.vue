@@ -5,7 +5,7 @@
         Products
       </h1>
     </div>
-    <ProductFilter v-model="searchQuery" />
+    <ProductFilter v-model="searchQuery" v-model:sort-order="sortOrder" />
     <div v-if="!isLoading" class="mt-4">
       <ProductCategoryList
         :active-category="selectedCategory"
@@ -35,12 +35,14 @@ import CategoryService, {
   type ICategory,
 } from "~/services/category/category-service";
 import ProductService, {
+  type IProductSortOrder,
   type IProductsQueryParams,
   type IProductsResponse,
 } from "~/services/product/product-service";
 
 const searchQuery = ref<string>("");
 const debouncedSearchQuery = ref<string>("");
+const sortOrder = ref<IProductSortOrder | "">("");
 const route = useRoute();
 const categoryService = new CategoryService();
 const productService = new ProductService();
@@ -53,17 +55,27 @@ const selectedCategory = computed(() => {
   return typeof category === "string" ? category : "";
 });
 
-const productQueryParams: IProductsQueryParams = {
-  limit: 10,
-  skip: 0,
-  select: "id,title,category,price,rating,thumbnail",
-};
+const productQueryParams = computed<IProductsQueryParams>(() => {
+  const params: IProductsQueryParams = {
+    limit: 10,
+    skip: 0,
+    select: "id,title,category,price,rating,thumbnail",
+  };
+
+  if (sortOrder.value) {
+    params.sortBy = "price";
+    params.order = sortOrder.value;
+  }
+
+  return params;
+});
 
 const productsCacheKey = computed(() => {
   const category = selectedCategory.value || "all";
   const query = debouncedSearchQuery.value.trim() || "default";
+  const sort = sortOrder.value || "unsorted";
 
-  return `products-${category}-${query}`;
+  return `products-${category}-${query}-${sort}`;
 });
 
 const { data, pending, status } = await useAsyncData<IProductsResponse>(
@@ -73,18 +85,18 @@ const { data, pending, status } = await useAsyncData<IProductsResponse>(
     if (selectedCategory.value) {
       return productService.getByCategory(
         selectedCategory.value,
-        productQueryParams,
+        productQueryParams.value,
       );
     }
 
     if (query) {
       return productService.search({
-        ...productQueryParams,
+        ...productQueryParams.value,
         q: query,
       });
     }
 
-    return productService.get(productQueryParams);
+    return productService.get(productQueryParams.value);
   },
   {
     server: false,

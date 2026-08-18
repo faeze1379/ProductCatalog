@@ -3,7 +3,7 @@
     class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 shadow-[0_12px_32px_rgba(15,23,42,0.08)] backdrop-blur-xl"
   >
     <div
-      class="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10"
+      class="mx-auto flex h-15 w-full max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10"
     >
       <NuxtLink
         to="/products"

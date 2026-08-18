@@ -34,6 +34,18 @@ export default class ProductService {
     );
   }
 
+  getByCategory(
+    category: string,
+    params?: IProductsQueryParams,
+  ): Promise<IProductsResponse> {
+    return mapToDataOnly<IProductsResponse>(
+      apiClient.get<IProductsResponse>(
+        `/products/category/${encodeURIComponent(category)}`,
+        { params },
+      ),
+    );
+  }
+
   search(params?: IProductsQueryParams): Promise<IProductsResponse> {
     return mapToDataOnly<IProductsResponse>(
       apiClient.get<IProductsResponse>("/products/search", { params }),

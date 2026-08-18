@@ -28,7 +28,7 @@
         'flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-semibold shadow-[0_8px_22px_rgba(15,23,42,0.08)] sm:h-12 sm:gap-2 sm:px-4 sm:text-sm',
         props.sortOrder
           ? 'bg-violet-600 text-white'
-          : 'border border-slate-200 bg-white text-slate-700',
+          : 'bg-white text-slate-700',
       ]"
       @click="toggleSortOrder"
     >

@@ -30,16 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import BaseInput from "~/components/BaseInput.vue";
+interface IProps {
+  modelValue?: string;
+}
 
-withDefaults(
-  defineProps<{
-    modelValue?: string;
-  }>(),
-  {
-    modelValue: "",
-  },
-);
+import BaseInput from "~/components/ui/BaseInput.vue";
+withDefaults(defineProps<IProps>(), {
+  modelValue: "",
+});
 
 const emit = defineEmits<{
   "update:modelValue": [value: string];

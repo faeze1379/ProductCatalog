@@ -6,7 +6,7 @@
       </h1>
     </div>
     <ProductFilter v-model="searchQuery" v-model:sort-order="sortOrder" />
-    <div v-if="!isLoading" class="mt-4">
+    <div v-if="categories.length > 0" class="mt-4">
       <ProductCategoryList
         :active-category="selectedCategory"
         :categories="categories"
@@ -20,7 +20,10 @@
         title="No products found"
         description="There are no products to display."
       />
-      <ProductList v-else :products="products" />
+      <template v-else>
+        <ProductList :products="products" />
+        <Pagination v-model="currentPage" :total-pages="totalPages" />
+      </template>
     </div>
   </section>
 </template>
@@ -31,6 +34,7 @@ import ProductFilter from "~/components/products/filter/ProductFilter.vue";
 import ProductList from "~/components/products/list/ProductList.vue";
 import Loading from "~/components/common/Loading.vue";
 import NotFound from "~/components/common/NotFound.vue";
+import Pagination from "~/components/common/Pagination.vue";
 import CategoryService, {
   type ICategory,
 } from "~/services/category/category-service";
@@ -43,9 +47,11 @@ import ProductService, {
 const searchQuery = ref<string>("");
 const debouncedSearchQuery = ref<string>("");
 const sortOrder = ref<IProductSortOrder | "">("");
+const currentPage = ref<number>(1);
 const route = useRoute();
 const categoryService = new CategoryService();
 const productService = new ProductService();
+const productsLimit = 10;
 
 let searchTimeout: ReturnType<typeof setTimeout> | undefined;
 
@@ -57,8 +63,8 @@ const selectedCategory = computed(() => {
 
 const productQueryParams = computed<IProductsQueryParams>(() => {
   const params: IProductsQueryParams = {
-    limit: 10,
-    skip: 0,
+    limit: productsLimit,
+    skip: (currentPage.value - 1) * productsLimit,
     select: "id,title,category,price,rating,thumbnail",
   };
 
@@ -70,13 +76,27 @@ const productQueryParams = computed<IProductsQueryParams>(() => {
   return params;
 });
 
-const productsCacheKey = computed(() => {
+const filtersCacheKey = computed(() => {
   const category = selectedCategory.value || "all";
   const query = debouncedSearchQuery.value.trim() || "default";
   const sort = sortOrder.value || "unsorted";
 
-  return `products-${category}-${query}-${sort}`;
+  return `${category}-${query}-${sort}`;
 });
+
+watch(
+  filtersCacheKey,
+  () => {
+    currentPage.value = 1;
+  },
+  {
+    flush: "sync",
+  },
+);
+
+const productsCacheKey = computed(
+  () => `products-${filtersCacheKey.value}-${currentPage.value}`,
+);
 
 const { data, pending, status } = await useAsyncData<IProductsResponse>(
   productsCacheKey,
@@ -112,6 +132,10 @@ const { data: productCategories } = await useAsyncData<ICategory[]>(
 );
 
 const products = computed(() => data.value?.products ?? []);
+const totalProducts = computed(() => data.value?.total ?? 0);
+const totalPages = computed(() =>
+  Math.ceil(totalProducts.value / productsLimit),
+);
 const categories = computed(() => productCategories.value ?? []);
 const isLoading = computed(() => pending.value || status.value === "idle");
 

@@ -3,10 +3,14 @@ import { apiClient, mapToDataOnly } from "~/services/api-service";
 export interface IProduct {
   id: number;
   title: string;
+  description?: string;
   category: string;
+  brand?: string;
   price: number;
   rating: number;
+  stock?: number;
   thumbnail: string;
+  images?: string[];
 }
 
 export interface IProductsResponse {

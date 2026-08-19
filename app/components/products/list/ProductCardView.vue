@@ -54,8 +54,15 @@
           height="16"
           aria-hidden="true"
         />
-        <span>{{ formatRating(product.rating) }}</span>
+        <span>{{ product.rating }}</span>
       </div>
+
+      <NuxtLink
+        :to="`/products/${product.id}`"
+        class="grid h-10 place-items-center rounded-lg border border-violet-600 text-sm font-semibold text-violet-600"
+      >
+        View details
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -77,8 +84,4 @@ const favoriteProductsStore = useFavoriteProductsStore();
 const isFavorite = computed(() =>
   favoriteProductsStore.isFavorite(props.product.id),
 );
-
-function formatRating(rating: number) {
-  return rating.toFixed(1);
-}
 </script>
